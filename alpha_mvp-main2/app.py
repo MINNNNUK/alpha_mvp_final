@@ -81,7 +81,11 @@ def load_company_data():
     try:
         supabase = init_supabase()
         result = supabase.table('alpha_companies3').select('*').execute()
-        return pd.DataFrame(result.data)
+        df = pd.DataFrame(result.data)
+        # 컬럼명 매핑 (기업명 -> 회사명)
+        if '기업명' in df.columns:
+            df = df.rename(columns={'기업명': '회사명'})
+        return df
     except Exception as e:
         st.error(f"회사 데이터 로드 실패: {e}")
         return pd.DataFrame()
